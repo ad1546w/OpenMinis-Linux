@@ -368,7 +368,7 @@ internal fun MuseStoreDetail(
                                     outcome.mcpIds.size,
                                 )
                                 if (outcome.runtimeOnlyKeys.isNotEmpty()) {
-                                    message += "\n" + context.getString(
+                                    message = (message ?: "") + "\n" + context.getString(
                                         R.string.muse_store_runtime_notice,
                                         outcome.runtimeOnlyKeys.joinToString(", "),
                                     )
