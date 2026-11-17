@@ -298,12 +298,13 @@ jobs:
             echo "MINIS_UPLOAD_KEY_PASSWORD=$KEY_PASSWORD" >> "$GITHUB_ENV"
             echo "signed with the tracked src/android/release.keystore"
           else
-            # Never fall through to a debug-signed release: UpdateChecker pins
-            # updates to the installed signing certificate, so a debug-signed APK
-            # could not replace any real install — publishing one silently
-            # strands every existing user on a dead upgrade path.
-            echo "::error::No upload keystore available. Set MINIS_UPLOAD_KEYSTORE_BASE64 (+ passwords), or MINIS_UPLOAD_STORE_PASSWORD to use the tracked release.keystore. Refusing to publish a debug-signed release."
-            exit 1
+            # [T-personal-fork-debug-fallback] Upstream refuses debug-signed
+            # releases because a debug APK cannot upgrade a real install. On a
+            # personal fork without signing secrets, a debug-signed APK is
+            # exactly what we want: build.gradle.kts resolves hasUploadKeystore
+            # to false (the tracked keystore has no password on a fork) and
+            # falls back to the debug signing config on its own.
+            echo "::warning::No signing secrets configured — falling back to debug signing for this personal fork."
           fi
 
       # [T-rolling-version] Rolling builds all overwrite the same `android-latest`
