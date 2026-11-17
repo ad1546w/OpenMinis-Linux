@@ -154,7 +154,7 @@ object MusePluginInstaller {
                 args = server.args,
             )
             runCatching { mcpRepository?.add(config) }
-                .onSuccess { if (it) installedMcp.add(configId) }
+                .onSuccess { added -> if (added == true) installedMcp.add(configId) }
                 .onFailure { Log.w(TAG, "mcp add failed for ${server.id}: ${it.message}") }
         }
 
