@@ -45,7 +45,7 @@ object MuseIndexClient {
         val candidates = buildList {
             if (override != null) add(override)
             add(DEFAULT_INDEX_URL)
-            add(mirrorFor(DEFAULT_INDEX_URL))
+            mirrorFor(DEFAULT_INDEX_URL)?.let { add(it) }
         }
         for (url in candidates) {
             val text = fetchText(context, url) ?: continue
