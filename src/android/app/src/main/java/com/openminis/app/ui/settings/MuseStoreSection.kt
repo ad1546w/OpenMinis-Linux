@@ -100,8 +100,8 @@ internal fun MuseStoreSection(
         scope.launch {
             if (force) {
                 val result = withContext(Dispatchers.IO) { MuseIndexClient.fetch(context) }
-                entries = result.first
-                live = result.second
+                entries = result.entries
+                live = result.live
             } else {
                 entries = MuseIndexClient.cached(context)
             }
