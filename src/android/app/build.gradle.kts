@@ -226,7 +226,14 @@ android {
     }
 
     val uploadStoreFile = resolveSigningStoreFile()
-    val hasUploadKeystore = uploadStoreFile != null
+    val uploadStorePassword = envOrBlank("MINIS_UPLOAD_STORE_PASSWORD")
+        .ifEmpty { signingProps.getProperty("signing.storePassword")?.trim().orEmpty() }
+    // [T-personal-fork-debug-fallback] A fresh fork finds the tracked
+    // release.keystore but not its password (deliberately untracked upstream).
+    // Treat keystore-without-password as no-keystore so the release build
+    // falls back to the debug signing config instead of failing inside
+    // apksigner with blank passwords.
+    val hasUploadKeystore = uploadStoreFile != null && uploadStorePassword.isNotEmpty()
     // [T-signing-secret-untracked] signing.properties is no longer in git, so a
     // fresh clone resolves a keystore with a blank password and fails inside
     // apksigner with a message about a corrupt file. Say what is actually
